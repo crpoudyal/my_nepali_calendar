@@ -22,8 +22,9 @@ class CalendarCell<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isToday = CalendarUtils.isToday(date.toDateTime());
-    final isSelected = _isSelectedDate(date);
-    final isHoliday = event?.isHoliday ?? false;
+    final isSelected = date.year == selectedDate.year &&
+        date.month == selectedDate.month &&
+        date.day == selectedDate.day;
 
     return GestureDetector(
       onTap: () => onDaySelected(date),
@@ -32,8 +33,7 @@ class CalendarCell<T> extends StatelessWidget {
           color: _getCellColor(isToday, isSelected),
           border: calendarStyle.showBorder
               ? Border.all(
-                  color: _getCellColor(isToday, isSelected)
-                      .withValues(alpha: 0.05),
+                  color: Colors.grey.withValues(alpha: 0.1),
                 )
               : null,
           borderRadius: BorderRadius.circular(8),
@@ -60,11 +60,8 @@ class CalendarCell<T> extends StatelessWidget {
                     "${date.toDateTime().day}",
                     style: TextStyle(
                       fontSize: 10,
-                      color: _getCellTextColor(
-                        isToday,
-                        isSelected,
-                        date.weekday,
-                      ),
+                      color:
+                          _getCellTextColor(isToday, isSelected, date.weekday),
                     ),
                   ),
                 ),
@@ -76,7 +73,7 @@ class CalendarCell<T> extends StatelessWidget {
                   Icons.circle,
                   size: 5,
                   color:
-                      _getEventColor(isHoliday, isToday, date.weekday, event!),
+                      event!.customColor ?? calendarStyle.cellsStyle.dotColor,
                 ),
               ),
           ],
@@ -95,24 +92,8 @@ class CalendarCell<T> extends StatelessWidget {
   }
 
   Color _getCellTextColor(bool isToday, bool isSelected, int weekday) {
-    if (isToday && isSelected) return Colors.white;
-    if (isToday) return Colors.white;
+    if (isToday || (isToday && isSelected)) return Colors.white;
     if (weekday == 7) return calendarStyle.cellsStyle.weekDayColor;
     return Colors.black;
-  }
-
-  /// ✅ Updated to use **event.customColor** if provided
-  Color _getEventColor(
-      bool isHoliday, bool isToday, int weekday, CalendarEvent event) {
-    if (weekday == 7) return calendarStyle.cellsStyle.weekDayColor;
-    if (isToday) return Colors.white;
-    if (isHoliday) return calendarStyle.cellsStyle.weekDayColor;
-    return event.customColor ?? calendarStyle.cellsStyle.dotColor;
-  }
-
-  bool _isSelectedDate(NepaliDateTime date) {
-    return date.year == selectedDate.year &&
-        date.month == selectedDate.month &&
-        date.day == selectedDate.day;
   }
 }
