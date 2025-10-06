@@ -88,7 +88,7 @@ class _NepaliCalendarState<T> extends State<NepaliCalendar<T>> {
   void _onPageChanged(int pageIndex) {
     final year = CalendarUtils.calenderyearStart + (pageIndex ~/ 12);
     final month = (pageIndex % 12) + 1;
-    final newDate = NepaliDateTime(year: year, month: month, day: 1);
+    final newDate = NepaliDateTime(year: year, month: month);
 
     _currentDate = newDate;
     _updateSelectedDate(newDate);
