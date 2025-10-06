@@ -27,6 +27,8 @@ class NepaliCalendar<T> extends StatefulWidget {
     NepaliDateTime _,
     CalendarEvent<T> event,
   )? eventBuilder;
+  final Color? eventColor;
+  final Color? holidayColor;
 
   const NepaliCalendar({
     super.key,
@@ -39,6 +41,8 @@ class NepaliCalendar<T> extends StatefulWidget {
     this.eventBuilder,
     this.controller,
     this.headerBuilder,
+    this.eventColor,
+    this.holidayColor,
   }) : assert(
           eventList == null || checkIsHoliday != null,
           'checkIsHoliday must be provided when eventList is not null',
@@ -168,6 +172,8 @@ class _NepaliCalendarState<T> extends State<NepaliCalendar<T>> {
                   _selectedDate,
                   event,
                 ),
+                eventColor: widget.eventColor,
+                holidayColor: widget.holidayColor,
               ),
             ),
           ],
