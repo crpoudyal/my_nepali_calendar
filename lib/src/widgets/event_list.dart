@@ -16,13 +16,16 @@ class EventList<T> extends StatelessWidget {
     int index,
     CalendarEvent<T> event,
   )? itemBuilder;
-
+  final Color? eventColor;
+  final Color? holidayColor;
   // Constructor with required and optional parameters
   const EventList({
     super.key,
     required this.eventList,
     required this.selectedDate,
     this.itemBuilder,
+    this.eventColor,
+    this.holidayColor,
   });
 
   @override
@@ -55,7 +58,9 @@ class EventList<T> extends StatelessWidget {
                 Icons.circle,
                 size: 5,
                 // Use red for holidays, blue for regular events
-                color: isHoliday ? Colors.red : Colors.blue,
+                color: isHoliday
+                    ? holidayColor ?? event.customColor ?? Colors.red
+                    : eventColor ?? event.customColor ?? Colors.blue,
               ),
             );
       },

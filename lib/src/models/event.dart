@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import '../src.dart';
 
 /// Represents an event in the Nepali calendar.
@@ -39,6 +41,8 @@ class CalendarEvent<T> {
   /// event descriptions, tags, or metadata.
   final T? additionalInfo;
 
+  final Color? customColor;
+
   /// Creates a [CalendarEvent] instance.
   ///
   /// - [date]: The Nepali date associated with the event.
@@ -48,5 +52,6 @@ class CalendarEvent<T> {
     required this.date,
     this.isHoliday = false,
     this.additionalInfo,
+    this.customColor,
   });
 }

@@ -9,7 +9,7 @@ class CalendarCell<T> extends StatelessWidget {
   final OnDateSelected onDaySelected;
   final NepaliCalendarStyle calendarStyle;
 
-  // optional color parameters
+  /// Dynamic dot colors
   final Color? eventColor;
   final Color? holidayColor;
 
@@ -103,13 +103,13 @@ class CalendarCell<T> extends StatelessWidget {
     return Colors.black;
   }
 
-  // Use user-provided colors if set
   Color _getEventColor(bool isHoliday, bool isToday, int weekday) {
-    if (weekday == 7) {
-      return holidayColor ?? calendarStyle.cellsStyle.weekDayColor;
+    if (isHoliday) {
+      return holidayColor ??
+          event?.customColor ??
+          calendarStyle.cellsStyle.dotColor;
     }
-    if (isToday) return Colors.white;
-    if (isHoliday) return holidayColor ?? calendarStyle.cellsStyle.weekDayColor;
+    if (event?.customColor != null) return event!.customColor!;
     return eventColor ?? calendarStyle.cellsStyle.dotColor;
   }
 
