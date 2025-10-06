@@ -71,10 +71,9 @@ class CalendarCell<T> extends StatelessWidget {
                 bottom: 5.0,
                 child: Icon(
                   Icons.circle,
-                  size: 5,
-                  // Use customColor if provided; otherwise fallback
-                  color: event?.customColor ??
-                      _getEventColor(isHoliday, isToday, date.weekday),
+                  size: 6,
+                  color:
+                      _getEventColor(event, isHoliday, isToday, date.weekday),
                 ),
               ),
           ],
@@ -95,15 +94,25 @@ class CalendarCell<T> extends StatelessWidget {
   Color _getCellTextColor(bool isToday, bool isSelected, int weekday) {
     if (isToday && isSelected) return Colors.white;
     if (isToday) return Colors.white;
-    if (weekday == 7) return calendarStyle.cellsStyle.weekDayColor;
-    return Colors.black;
+    if (weekday == 7 && event?.additionalInfo == null) {
+      return calendarStyle.cellsStyle.weekDayColor;
+    }
+    return event?.customColor ?? Colors.black;
   }
 
-  Color _getEventColor(bool isHoliday, bool isToday, int weekday) {
-    if (weekday == 7) return calendarStyle.cellsStyle.weekDayColor;
+  // This is the key change: use event.customColor if available
+  Color _getEventColor(
+    CalendarEvent<T>? event,
+    bool isHoliday,
+    bool isToday,
+    int weekday,
+  ) {
+    if (event?.additionalInfo == null) {
+      return calendarStyle.cellsStyle.weekDayColor;
+    }
     if (isToday) return Colors.white;
     if (isHoliday) return calendarStyle.cellsStyle.weekDayColor;
-    return calendarStyle.cellsStyle.dotColor;
+    return event?.customColor ?? calendarStyle.cellsStyle.dotColor;
   }
 
   bool _isSelectedDate(NepaliDateTime date) {

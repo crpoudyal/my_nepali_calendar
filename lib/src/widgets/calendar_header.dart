@@ -55,6 +55,9 @@ class CalendarHeader extends StatelessWidget {
                   style: calendarStyle.headersStyle.monthHeaderStyle,
                 ),
               ),
+              SizedBox(
+                width: 5,
+              ),
               // Year display with language-specific formatting
               Flexible(
                 child: Text(
