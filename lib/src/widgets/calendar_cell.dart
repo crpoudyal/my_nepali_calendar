@@ -9,10 +9,6 @@ class CalendarCell<T> extends StatelessWidget {
   final OnDateSelected onDaySelected;
   final NepaliCalendarStyle calendarStyle;
 
-  /// Dynamic dot colors
-  final Color? eventColor;
-  final Color? holidayColor;
-
   const CalendarCell({
     super.key,
     required this.day,
@@ -21,8 +17,6 @@ class CalendarCell<T> extends StatelessWidget {
     required this.event,
     required this.onDaySelected,
     required this.calendarStyle,
-    this.eventColor,
-    this.holidayColor,
   });
 
   @override
@@ -66,8 +60,11 @@ class CalendarCell<T> extends StatelessWidget {
                     "${date.toDateTime().day}",
                     style: TextStyle(
                       fontSize: 10,
-                      color:
-                          _getCellTextColor(isToday, isSelected, date.weekday),
+                      color: _getCellTextColor(
+                        isToday,
+                        isSelected,
+                        date.weekday,
+                      ),
                     ),
                   ),
                 ),
@@ -78,7 +75,8 @@ class CalendarCell<T> extends StatelessWidget {
                 child: Icon(
                   Icons.circle,
                   size: 5,
-                  color: _getEventColor(isHoliday, isToday, date.weekday),
+                  color:
+                      _getEventColor(isHoliday, isToday, date.weekday, event!),
                 ),
               ),
           ],
@@ -103,14 +101,13 @@ class CalendarCell<T> extends StatelessWidget {
     return Colors.black;
   }
 
-  Color _getEventColor(bool isHoliday, bool isToday, int weekday) {
-    if (isHoliday) {
-      return holidayColor ??
-          event?.customColor ??
-          calendarStyle.cellsStyle.dotColor;
-    }
-    if (event?.customColor != null) return event!.customColor!;
-    return eventColor ?? calendarStyle.cellsStyle.dotColor;
+  /// ✅ Updated to use **event.customColor** if provided
+  Color _getEventColor(
+      bool isHoliday, bool isToday, int weekday, CalendarEvent event) {
+    if (weekday == 7) return calendarStyle.cellsStyle.weekDayColor;
+    if (isToday) return Colors.white;
+    if (isHoliday) return calendarStyle.cellsStyle.weekDayColor;
+    return event.customColor ?? calendarStyle.cellsStyle.dotColor;
   }
 
   bool _isSelectedDate(NepaliDateTime date) {
