@@ -83,17 +83,15 @@ class _NepaliCalendarState<T> extends State<NepaliCalendar<T>> {
     _pageController = PageController(initialPage: _currentPageIndex);
   }
 
-  // Update current date and trigger appropriate callbacks
+// Update current date and trigger appropriate callbacks
   void _updateCurrentDate(int year, int month, int day) {
     final previousDate = _selectedDate;
     _selectedDate = NepaliDateTime(year: year, month: month, day: day);
-    // Call appropriate callback based on what changed
-    if (previousDate.month != month) {
-      _onMonthChanged(month);
-      return;
-    }
 
-    _onDayChanged(month, day);
+    // Only trigger day change
+    if (previousDate != _selectedDate) {
+      _onDayChanged(month, day);
+    }
   }
 
   // Handle month change
@@ -103,7 +101,7 @@ class _NepaliCalendarState<T> extends State<NepaliCalendar<T>> {
     });
   }
 
-  // Handle day change
+// Handle day change
   void _onDayChanged(int month, int day) {
     setState(() {
       widget.onDayChanged?.call(_selectedDate);
@@ -118,19 +116,12 @@ class _NepaliCalendarState<T> extends State<NepaliCalendar<T>> {
       controller: _pageController,
       itemCount: CalendarUtils.nepaliYears.length * 12,
       onPageChanged: (index) {
-        // Calculate year and month from page index
         final int year = CalendarUtils.calenderyearStart + (index ~/ 12);
         final int month = (index % 12) + 1;
 
-        // Call month changed callback
-        widget.onMonthChanged?.call(
-          NepaliDateTime(
-            year: year,
-            month: month,
-            day: _currentDate.day,
-          ),
-        );
-        _updateCurrentDate(year, month, _currentDate.day);
+        _currentDate = NepaliDateTime(year: year, month: month, day: 1);
+
+        widget.onMonthChanged?.call(_currentDate);
       },
       itemBuilder: (context, index) {
         // Calculate year and month for current page
