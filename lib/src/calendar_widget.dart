@@ -88,21 +88,23 @@ class _NepaliCalendarState<T> extends State<NepaliCalendar<T>> {
     final previousDate = _selectedDate;
     _selectedDate = NepaliDateTime(year: year, month: month, day: day);
 
-    // Only trigger day change
-    if (previousDate != _selectedDate) {
-      _onDayChanged(month, day);
+    // If user moves to a different month, fire onMonthChanged
+    if (previousDate.year != year || previousDate.month != month) {
+      _onMonthChanged();
+    } else if (previousDate.day != day) {
+      _onDayChanged();
     }
   }
 
-  // Handle month change
-  void _onMonthChanged(int month) {
+  // Triggered when month changes
+  void _onMonthChanged() {
     setState(() {
       widget.onMonthChanged?.call(_selectedDate);
     });
   }
 
-// Handle day change
-  void _onDayChanged(int month, int day) {
+  // Triggered when day changes
+  void _onDayChanged() {
     setState(() {
       widget.onDayChanged?.call(_selectedDate);
     });
@@ -120,8 +122,8 @@ class _NepaliCalendarState<T> extends State<NepaliCalendar<T>> {
         final int month = (index % 12) + 1;
 
         _currentDate = NepaliDateTime(year: year, month: month, day: 1);
-
-        widget.onMonthChanged?.call(_currentDate);
+        _selectedDate = _currentDate;
+        widget.onMonthChanged?.call(_selectedDate);
       },
       itemBuilder: (context, index) {
         // Calculate year and month for current page
