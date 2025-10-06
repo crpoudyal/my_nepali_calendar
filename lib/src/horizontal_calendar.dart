@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../nepali_calendar_plus.dart';
+import '../my_nepali_calendar.dart';
 
 class HorizontalNepaliCalendar extends StatefulWidget {
   const HorizontalNepaliCalendar({
