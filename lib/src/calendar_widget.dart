@@ -27,6 +27,7 @@ class NepaliCalendar<T> extends StatefulWidget {
     NepaliDateTime _,
     CalendarEvent<T> event,
   )? eventBuilder;
+
   final Color? eventColor;
   final Color? holidayColor;
 
@@ -94,6 +95,7 @@ class _NepaliCalendarState<T> extends State<NepaliCalendar<T>> {
 
     // If user moves to a different month, fire onMonthChanged
     if (previousDate.year != year || previousDate.month != month) {
+      _onMonthChanged();
     } else if (previousDate.day != day) {
       _onDayChanged();
     }
@@ -124,6 +126,7 @@ class _NepaliCalendarState<T> extends State<NepaliCalendar<T>> {
         final int year = CalendarUtils.calenderyearStart + (index ~/ 12);
         final int month = (index % 12) + 1;
         _currentDate = NepaliDateTime(year: year, month: month, day: 1);
+        _selectedDate = _currentDate;
         widget.onMonthChanged?.call(_selectedDate);
       },
       itemBuilder: (context, index) {
