@@ -90,7 +90,6 @@ class _NepaliCalendarState<T> extends State<NepaliCalendar<T>> {
 
     // If user moves to a different month, fire onMonthChanged
     if (previousDate.year != year || previousDate.month != month) {
-      _onMonthChanged();
     } else if (previousDate.day != day) {
       _onDayChanged();
     }
@@ -120,10 +119,7 @@ class _NepaliCalendarState<T> extends State<NepaliCalendar<T>> {
       onPageChanged: (index) {
         final int year = CalendarUtils.calenderyearStart + (index ~/ 12);
         final int month = (index % 12) + 1;
-        setState(() {
-          _currentDate = NepaliDateTime(year: year, month: month, day: 1);
-          _selectedDate = _currentDate;
-        });
+        _currentDate = NepaliDateTime(year: year, month: month, day: 1);
         widget.onMonthChanged?.call(_selectedDate);
       },
       itemBuilder: (context, index) {

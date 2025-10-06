@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  nepali_calendar_plus:
+  my_nepali_calendar:
       path: ../
 
 dev_dependencies:
