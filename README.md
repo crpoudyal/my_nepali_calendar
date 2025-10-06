@@ -72,7 +72,7 @@ flutter pub get
 1.Import the package:
 
 ```dart
-import 'package:nepali_calendar_plus/nepali_calendar_plus.dart';
+import 'package:my_nepali_calendar/my_nepali_calendar.dart';
 ```
 
 2.Add the calendar widget to your app:
@@ -220,4 +220,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 For any queries or support, please:
 
 - Create an issue on GitHub
-- Email: <work.sabinghimire@gmail.com>
+- Email: <crpoudyal@gmail.com>

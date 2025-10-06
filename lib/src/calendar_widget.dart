@@ -120,9 +120,10 @@ class _NepaliCalendarState<T> extends State<NepaliCalendar<T>> {
       onPageChanged: (index) {
         final int year = CalendarUtils.calenderyearStart + (index ~/ 12);
         final int month = (index % 12) + 1;
-
-        _currentDate = NepaliDateTime(year: year, month: month, day: 1);
-        _selectedDate = _currentDate;
+        setState(() {
+          _currentDate = NepaliDateTime(year: year, month: month, day: 1);
+          _selectedDate = _currentDate;
+        });
         widget.onMonthChanged?.call(_selectedDate);
       },
       itemBuilder: (context, index) {
