@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'src.dart';
 
-// typedef OnDateSelected = void Function(NepaliDateTime date);
-
 class NepaliCalendar<T> extends StatefulWidget {
   final NepaliDateTime? initialDate;
   final List<CalendarEvent<T>>? eventList;
@@ -46,23 +44,21 @@ class NepaliCalendar<T> extends StatefulWidget {
   State<NepaliCalendar> createState() => _NepaliCalendarState<T>();
 }
 
-class _NepaliCalendarState<T> extends State<NepaliCalendar<T>> {
+class _NepaliCalendarState<T> extends State<NepaliCalendar<T>>
+    with AutomaticKeepAliveClientMixin {
   late final PageController _pageController;
-  late NepaliDateTime _currentDate;
   late NepaliDateTime _selectedDate;
-  late int _currentPageIndex;
+  late int _initialPage;
 
   @override
   void initState() {
     super.initState();
-    _currentDate = widget.initialDate ?? NepaliDateTime.now();
-    _selectedDate = _currentDate;
-    _currentPageIndex =
-        ((_currentDate.year - CalendarUtils.calenderyearStart) * 12) +
-            _currentDate.month -
+    _selectedDate = widget.initialDate ?? NepaliDateTime.now();
+    _initialPage =
+        ((_selectedDate.year - CalendarUtils.calenderyearStart) * 12) +
+            _selectedDate.month -
             1;
-    _pageController = PageController(initialPage: _currentPageIndex);
-
+    _pageController = PageController(initialPage: _initialPage);
     widget.controller?._attach(this);
   }
 
@@ -73,75 +69,80 @@ class _NepaliCalendarState<T> extends State<NepaliCalendar<T>> {
     super.dispose();
   }
 
-  void _updateSelectedDate(NepaliDateTime newDate) {
-    final prevDate = _selectedDate;
-    _selectedDate = newDate;
-
-    if (prevDate.year != newDate.year || prevDate.month != newDate.month) {
-      widget.onMonthChanged?.call(_selectedDate);
-    } else if (prevDate.day != newDate.day) {
-      widget.onDayChanged?.call(_selectedDate);
-    }
-    setState(() {}); // Refresh UI for selection changes
-  }
+  @override
+  bool get wantKeepAlive => true;
 
   void _onPageChanged(int pageIndex) {
     final year = CalendarUtils.calenderyearStart + (pageIndex ~/ 12);
     final month = (pageIndex % 12) + 1;
-    final newDate = NepaliDateTime(year: year, month: month);
+    final newDate = NepaliDateTime(year: year, month: month, day: 1);
 
-    _currentDate = newDate;
-    _updateSelectedDate(newDate);
+    // Trigger month change callback
+    widget.onMonthChanged?.call(newDate);
+
+    // Update internal date
+    setState(() {
+      _selectedDate = newDate;
+    });
+  }
+
+  void _onDaySelected(NepaliDateTime newDate) {
+    setState(() {
+      _selectedDate = newDate;
+    });
+    widget.onDayChanged?.call(newDate);
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final totalPages = CalendarUtils.nepaliYears.length * 12;
 
-    return PageView.builder(
-      controller: _pageController,
-      itemCount: totalPages,
-      onPageChanged: _onPageChanged,
-      itemBuilder: (context, index) {
-        final year = CalendarUtils.calenderyearStart + (index ~/ 12);
-        final month = (index % 12) + 1;
+    return Column(
+      children: [
+        widget.headerBuilder?.call(_selectedDate, _pageController) ??
+            CalendarHeader(
+              selectedDate: _selectedDate,
+              pageController: _pageController,
+              calendarStyle: widget.calendarStyle,
+            ),
+        Expanded(
+          child: PageView.builder(
+            controller: _pageController,
+            itemCount: totalPages,
+            onPageChanged: _onPageChanged,
+            itemBuilder: (context, index) {
+              final year = CalendarUtils.calenderyearStart + (index ~/ 12);
+              final month = (index % 12) + 1;
 
-        return Column(
-          children: [
-            Card(
-              elevation: 0,
-              child: Column(
+              return Column(
                 children: [
-                  widget.headerBuilder?.call(_selectedDate, _pageController) ??
-                      CalendarHeader(
-                        selectedDate: _selectedDate,
-                        pageController: _pageController,
-                        calendarStyle: widget.calendarStyle,
-                      ),
                   CalendarMonthView<T>(
                     year: year,
                     month: month,
                     selectedDate: _selectedDate,
                     eventList: widget.eventList,
                     calendarStyle: widget.calendarStyle,
-                    onDaySelected: (date) => _updateSelectedDate(date),
+                    onDaySelected: _onDaySelected,
+                  ),
+                  Flexible(
+                    child: EventList<T>(
+                      eventList: widget.eventList,
+                      selectedDate: _selectedDate,
+                      itemBuilder: (context, i, event) =>
+                          widget.eventBuilder
+                              ?.call(context, i, _selectedDate, event) ??
+                          Container(),
+                      eventColor: widget.eventColor,
+                      holidayColor: widget.holidayColor,
+                    ),
                   ),
                 ],
-              ),
-            ),
-            Flexible(
-              child: EventList<T>(
-                eventList: widget.eventList,
-                selectedDate: _selectedDate,
-                itemBuilder: (context, i, event) =>
-                    widget.eventBuilder?.call(context, i, _selectedDate, event),
-                eventColor: widget.eventColor,
-                holidayColor: widget.holidayColor,
-              ),
-            ),
-          ],
-        );
-      },
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }
@@ -160,10 +161,14 @@ class NepaliCalendarController {
 
     _state!._pageController.animateToPage(
       pageIndex,
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 400),
       curve: Curves.easeInOut,
     );
-    _state!._updateSelectedDate(date);
+
+    _state!.setState(() {
+      _state!._selectedDate = date;
+    });
+    _state!.widget.onMonthChanged?.call(date);
   }
 
   void jumpToToday() => jumpToDate(NepaliDateTime.now());
