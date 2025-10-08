@@ -32,8 +32,7 @@ class CalendarCell<T> extends StatelessWidget {
           color: _getCellColor(isToday, isSelected),
           border: calendarStyle.showBorder
               ? Border.all(
-                  color: _getCellColor(isToday, isSelected)!
-                      .withValues(alpha: 0.05),
+                  color: (_getCellColor(isToday, isSelected)),
                 )
               : null,
           borderRadius: BorderRadius.circular(8),
@@ -82,12 +81,12 @@ class CalendarCell<T> extends StatelessWidget {
     );
   }
 
-  Color? _getCellColor(bool isToday, bool isSelected) {
-    if (isToday && isSelected) return event?.customColor;
+  Color _getCellColor(bool isToday, bool isSelected) {
+    if (isToday && isSelected) return event?.customColor ?? Colors.blue;
     if (isSelected) {
       return calendarStyle.cellsStyle.selectedColor.withValues(alpha: 0.2);
     }
-    if (isToday) return event?.customColor;
+    if (isToday) return event?.customColor ?? Colors.black;
     return Colors.transparent;
   }
 
