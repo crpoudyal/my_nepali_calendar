@@ -18,6 +18,7 @@ class NepaliCalendar<T> extends StatefulWidget {
     NepaliDateTime date,
     CalendarEvent<T> event,
   )? eventBuilder;
+  final Widget Function(NepaliDateTime date)? eventsHeaderBuilder;
 
   final Color? eventColor;
   final Color? holidayColor;
@@ -33,6 +34,7 @@ class NepaliCalendar<T> extends StatefulWidget {
     this.controller,
     this.headerBuilder,
     this.eventBuilder,
+    this.eventsHeaderBuilder,
     this.eventColor,
     this.holidayColor,
   }) : assert(
@@ -125,6 +127,8 @@ class _NepaliCalendarState<T> extends State<NepaliCalendar<T>>
                     calendarStyle: widget.calendarStyle,
                     onDaySelected: _onDaySelected,
                   ),
+                  widget.eventsHeaderBuilder?.call(_selectedDate) ??
+                      SizedBox.shrink(),
                   Flexible(
                     child: EventList<T>(
                       eventList: widget.eventList,
