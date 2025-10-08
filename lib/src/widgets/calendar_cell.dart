@@ -34,7 +34,9 @@ class CalendarCell<T> extends StatelessWidget {
               ? Border.all(
                   color: (_getCellColor(isToday, isSelected)),
                 )
-              : null,
+              : Border.all(
+                  color: Colors.grey.withValues(alpha: 0.2),
+                ),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Stack(
