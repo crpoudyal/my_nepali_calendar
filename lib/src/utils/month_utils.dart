@@ -47,18 +47,18 @@ class MonthUtils {
 
   /// List of Nepali month names in English script.
   static final List<String> _nepaliENMonths = [
-    "Baisakh",
-    "Jestha",
-    "Asar",
-    "Shrawan",
-    "Bhadra",
-    "Ashoj",
-    "Kartik",
-    "Mangsir",
-    "Poush",
-    "Magh",
-    "Falgun",
-    "Chaitra",
+    "Baisakh (Apr/May)",
+    "Jestha (May/Jun)",
+    "Asar (Jun/July)",
+    "Shrawan (July/Aug)",
+    "Bhadra (Aug/Sept)",
+    "Ashoj (Sept/Oct)",
+    "Kartik (Oct/Nov)",
+    "Mangsir (Nov/Dec)",
+    "Poush (Dec/Jan)",
+    "Magh (Jan/Feb)",
+    "Falgun (Feb/Mar)",
+    "Chaitra (Mar/Apr)",
   ];
 
   /// List of full English month names.
